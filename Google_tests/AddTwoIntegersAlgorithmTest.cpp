@@ -1,28 +1,29 @@
 #include "gtest/gtest.h"
 #include "AddTwoIntegersAlgorithm.h"
 
-TEST(AddTwoIntegersAlgorithmTestSuite, Add4Bits) {
-    const int numBits = 4;
-    AddTwoIntegersAlgorithm<numBits> addTwoAlg {};
-
-    for (int a = 0; a < pow(2, numBits); a++) {
-        for (int b = 0; b < pow(2, numBits); ++b) {
+template<int BITS>
+void testAllInputs() {
+    AddTwoIntegersAlgorithm<BITS> addTwoAlg{};
+    for (int a = 0; a < pow(2, BITS); a++) {
+        for (int b = 0; b < pow(2, BITS); ++b) {
             int result = addTwoAlg.add(a, b);
-            std::cout << a << " + " << b << " = " << result << std::endl;
-            assert((a + b) % (int)pow(2, numBits) == result);
+            ASSERT_EQ((a + b) % (int) pow(2, BITS), result);
         }
     }
+}
+
+TEST(AddTwoIntegersAlgorithmTestSuite, Add1Bits) {
+    testAllInputs<1>();
+}
+
+TEST(AddTwoIntegersAlgorithmTestSuite, Add4Bits) {
+    testAllInputs<4>();
 }
 
 TEST(AddTwoIntegersAlgorithmTestSuite, Add5Bits) {
-    const int numBits = 5;
-    AddTwoIntegersAlgorithm<numBits> addTwoAlg {};
-
-    for (int a = 0; a < pow(2, numBits); a++) {
-        for (int b = 0; b < pow(2, numBits); ++b) {
-            int result = addTwoAlg.add(a, b);
-            std::cout << a << " + " << b << " = " << result << std::endl;
-            assert((a + b) % (int)pow(2, numBits) == result);
-        }
-    }
+    testAllInputs<5>();
 }
+
+//TEST(AddTwoIntegersAlgorithmTestSuite, Add8Bits) {
+//    testAllInputs<8>();
+//}
