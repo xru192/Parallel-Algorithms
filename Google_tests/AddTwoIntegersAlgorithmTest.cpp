@@ -24,6 +24,22 @@ TEST(AddTwoIntegersAlgorithmTestSuite, Add5Bits) {
     testAllInputs<5>();
 }
 
-//TEST(AddTwoIntegersAlgorithmTestSuite, Add8Bits) {
-//    testAllInputs<8>();
-//}
+template<int BITS>
+void testRandomInputs(int trials) {
+    AddTwoIntegersAlgorithm<BITS> addTwoAlg{};
+    for (int i = 0; i < trials; ++i) {
+        int a = rand() % (int) pow(2, BITS);
+        int b = rand() % (int) pow(2, BITS);
+        int result = addTwoAlg.add(a, b);
+        ASSERT_EQ(result, (a + b) % (int) pow(2, BITS)) << "a: " << a << ", b: " << b << std::endl;
+    }
+}
+
+
+TEST(AddTwoIntegersAlgorithmTestSuite, Add16Bits) {
+    testRandomInputs<16>(1000);
+}
+
+TEST(AddTwoIntegersAlgorithmTestSuite, Add20Bits) {
+    testRandomInputs<20>(2000);
+}

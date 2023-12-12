@@ -6,18 +6,19 @@
 
 template<int BITS>
 class AddThreeIntegersAlgorithm {
-
+    typedef std::array<int, BITS> bitarray;
 public:
     int add(int x, int y, int z);
 
+    std::pair<bitarray, bitarray> reduceAdd(bitarray xBitArray, bitarray yBitArray, bitarray zBitArray);
 
 private:
     AddTwoIntegersAlgorithm<BITS> addTwoAlg{};
 
-    std::array<std::array<int, BITS>, 3> data{};
+    std::array<bitarray, 3> data{};
 
-    std::array<int, BITS> evenSumData{};    // stores E(x) + E(y) + E(z), where E(x) = x with odd bits set to 0
-    std::array<int, BITS> oddSumData{};     // stores O(x) + O(y) + O(z), where O(x) = x with even bits set to 0
+    bitarray evenSumData{};    // stores E(x) + E(y) + E(z), where E(x) = x with odd bits set to 0
+    bitarray oddSumData{};     // stores O(x) + O(y) + O(z), where O(x) = x with even bits set to 0
 
     // performs x[bit] + y[bit] + z[bit] and updates bits b and b+1 in evenSumData
     void computeEvenSumBits(int bit);
@@ -28,14 +29,13 @@ private:
 };
 
 template<int BITS>
-int AddThreeIntegersAlgorithm<BITS>::add(int x, int y, int z) {
+std::pair<typename AddThreeIntegersAlgorithm<BITS>::bitarray, typename AddThreeIntegersAlgorithm<BITS>::bitarray>
+AddThreeIntegersAlgorithm<BITS>::reduceAdd(AddThreeIntegersAlgorithm::bitarray xBitArray,
+                                           AddThreeIntegersAlgorithm::bitarray yBitArray,
+                                           AddThreeIntegersAlgorithm::bitarray zBitArray) {
     // reset data from previous computation
     evenSumData.fill(0);
     oddSumData.fill(0);
-
-    std::array<int, BITS> xBitArray = utils::intToBitArray<BITS>(x);
-    std::array<int, BITS> yBitArray = utils::intToBitArray<BITS>(y);
-    std::array<int, BITS> zBitArray = utils::intToBitArray<BITS>(z);
 
     data = {xBitArray, yBitArray, zBitArray};
 
@@ -57,9 +57,19 @@ int AddThreeIntegersAlgorithm<BITS>::add(int x, int y, int z) {
         future.wait();
     }
 
+    return std::make_pair(evenSumData, oddSumData);
+}
+
+template<int BITS>
+int AddThreeIntegersAlgorithm<BITS>::add(int x, int y, int z) {
+    std::array<int, BITS> xBitArray = utils::intToBitArray<BITS>(x);
+    std::array<int, BITS> yBitArray = utils::intToBitArray<BITS>(y);
+    std::array<int, BITS> zBitArray = utils::intToBitArray<BITS>(z);
+
+    reduceAdd(xBitArray, yBitArray, zBitArray);
+
     int a = utils::bitArrayToInt<BITS>(evenSumData);
     int b = utils::bitArrayToInt<BITS>(oddSumData);
-
 
     return addTwoAlg.add(a, b);
 }

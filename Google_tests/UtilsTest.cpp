@@ -31,3 +31,16 @@ TEST(UtilsTestSuite, logBits) {
     }
 }
 
+TEST(UtilsTestSuite, shiftBitArray) {
+    std::array<int, 4> original {1, 0, 1, 1};
+    std::array<int, 4> shifted1 {0, 1, 0, 1};
+    std::array<int, 4> shifted2 {0, 0, 1, 0};
+    std::array<int, 4> shifted3 {0, 0, 0, 1};
+    std::array<int, 4> shifted4 {0, 0, 0, 0};
+
+    ASSERT_EQ(utils::shiftBitArray(original, 0), original);
+    ASSERT_EQ(utils::shiftBitArray(original, 1), shifted1);
+    ASSERT_EQ(utils::shiftBitArray(original, 2), shifted2);
+    ASSERT_EQ(utils::shiftBitArray(original, 3), shifted3);
+    ASSERT_EQ(utils::shiftBitArray(original, 4), shifted4);
+}

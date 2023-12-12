@@ -81,5 +81,16 @@ namespace utils {
     constexpr int ceiling(int n) {
         return n % 1 == 0 ? n : n + 1;
     }
+
+    template<std::size_t N>
+    std::array<int, N> shiftBitArray(const std::array<int, N> &bitArray, int shift) {
+        std::array<int, N> result{};
+        for (int i = shift; i < N; ++i) {
+            result[i] = bitArray[i - shift];
+        }
+
+        return result;
+    }
+
 }
 #endif //PARALLELALGORITHMS_UTILS_H
