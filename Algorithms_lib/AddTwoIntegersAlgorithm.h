@@ -17,8 +17,6 @@ public:
 
     int add(int a, int b);
 
-    int add(std::array<int, BITS> aBitArray, std::array<int, BITS> bBitArray);
-
 private:
     const int STAR = -1;
     std::array<std::array<int, LOG_BITS + 1>, BITS> data{};
@@ -60,17 +58,14 @@ int AddTwoIntegersAlgorithm<BITS>::add(int a, int b) {
         }
     }
 
+    a = utils::bitArrayToInt(aBitArray);    // in case a originally had more than BITS bits
+    b = utils::bitArrayToInt(bBitArray);
     int c = 0;
     for (int i = 0; i < BITS; ++i) {
         c += data[i][LOG_BITS] * (int) pow(2, i);
     }
 
     return a ^ b ^ c;
-}
-
-template<int BITS>
-int AddTwoIntegersAlgorithm<BITS>::add(std::array<int, BITS> aBitArray, std::array<int, BITS> bBitArray) {
-    return 0;
 }
 
 template<int BITS>
