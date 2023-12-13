@@ -1,31 +1,31 @@
 #include "gtest/gtest.h"
-#include "MultiplyTwoIntegersAlgorithmTest.h"
+#include "MultiplyTwoIntegersAlgorithm.h"
 
 template<int BITS>
-void testAllInputs() {
+void testAllMultiplyTwoInputs() {
     MultiplyTwoIntegersAlgorithmTest<BITS> multTwoAlg{};
-    for (int a = 0; a < pow(2, BITS); a++) {
+    for (int a = 0; a < pow(2, BITS); ++a) {
         for (int b = 0; b < pow(2, BITS); ++b) {
             int result = multTwoAlg.multiply(a, b);
-            ASSERT_EQ((a * b) % (int) pow(2, BITS), result);
+            ASSERT_EQ((a * b) % (int) pow(2, BITS), result) << "a: " << a << ", b: " << b << std::endl;
         }
     }
 }
 
 TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply1Bits) {
-    testAllInputs<1>();
+    testAllMultiplyTwoInputs<1>();
 }
 
 TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply4Bits) {
-    testAllInputs<4>();
+    testAllMultiplyTwoInputs<4>();
 }
 
 TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply5Bits) {
-    testAllInputs<5>();
+    testAllMultiplyTwoInputs<5>();
 }
 
 template<int BITS>
-void testRandomInputs(int trials) {
+void testMultiplyTwoRandomInputs(int trials) {
     MultiplyTwoIntegersAlgorithmTest<BITS> addTwoAlg{};
     for (int i = 0; i < trials; ++i) {
         int a = rand() % (int) pow(2, BITS);
@@ -36,10 +36,10 @@ void testRandomInputs(int trials) {
 }
 
 
-TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply16Bits) {
-    testRandomInputs<16>(1000);
+TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply8Bits) {
+    testMultiplyTwoRandomInputs<8>(1000);
 }
 
-TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply20Bits) {
-    testRandomInputs<20>(2000);
+TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply15Bits) {
+    testMultiplyTwoRandomInputs<15>(2000);
 }

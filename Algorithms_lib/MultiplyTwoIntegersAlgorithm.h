@@ -2,8 +2,8 @@
 // Created by Ryan Xu on 12/10/23.
 //
 
-#ifndef PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHMTEST_H
-#define PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHMTEST_H
+#ifndef PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHM_H
+#define PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHM_H
 
 #include <vector>
 #include <future>
@@ -21,10 +21,17 @@ private:
 
     // In parallel, replace triplets of numsToAdd with pairs of numsToAdd using the reduction for adding 3 integers
     void reduceNumsToAdd();
+
+    // In parallel, reduce the addition of 4 numbers to 3 using the reduction
+    // This case must be handled slightly differently
+    void reduce4NumsToAdd();
 };
 
 template<int BITS>
 int MultiplyTwoIntegersAlgorithmTest<BITS>::multiply(int a, int b) {
+    // reset from previous computation
+    numsToAdd.clear();
+
     std::array<int, BITS> aBitArray = utils::intToBitArray<BITS>(a);
     std::array<int, BITS> bBitArray = utils::intToBitArray<BITS>(b);
 
@@ -39,7 +46,7 @@ int MultiplyTwoIntegersAlgorithmTest<BITS>::multiply(int a, int b) {
 
     // Handle edge cases when there are fewer than 2 things to add
 
-    // when one of the inputs is 0 return 0
+    // when the second input is 0 return 0
     if (numsToAdd.size() == 0) {
         return 0;
     }
@@ -61,6 +68,11 @@ int MultiplyTwoIntegersAlgorithmTest<BITS>::multiply(int a, int b) {
 
 template<int BITS>
 void MultiplyTwoIntegersAlgorithmTest<BITS>::reduceNumsToAdd() {
+    if (numsToAdd.size() == 4) {
+        reduce4NumsToAdd();
+        return;
+    }
+
     // make sure # of nums to add is divisible by 3
     while (numsToAdd.size() % 3 != 0) {
         bitarray zeros{};
@@ -84,7 +96,23 @@ void MultiplyTwoIntegersAlgorithmTest<BITS>::reduceNumsToAdd() {
         newNumsToAdd.push_back(result.first);
         newNumsToAdd.push_back(result.second);
     }
+
+    numsToAdd = newNumsToAdd;
+}
+
+template<int BITS>
+void MultiplyTwoIntegersAlgorithmTest<BITS>::reduce4NumsToAdd() {
+    AddThreeIntegersAlgorithm<BITS> addThreeAlg{};
+    auto pair = addThreeAlg.reduceAdd(numsToAdd[0], numsToAdd[1], numsToAdd[2]);
+
+    std::vector<bitarray> newNumsToAdd{};
+
+    newNumsToAdd.push_back(pair.first);
+    newNumsToAdd.push_back(pair.second);
+    newNumsToAdd.push_back(numsToAdd[3]);
+
+    numsToAdd = newNumsToAdd;
 }
 
 
-#endif //PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHMTEST_H
+#endif //PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHM_H

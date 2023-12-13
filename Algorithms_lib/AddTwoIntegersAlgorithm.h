@@ -17,6 +17,8 @@ public:
 
     int add(int a, int b);
 
+    int add(std::array<int, BITS> aBitArray, std::array<int, BITS> bBitArray);
+
 private:
     const int STAR = -1;
     std::array<std::array<int, LOG_BITS + 1>, BITS> data{};
@@ -60,6 +62,46 @@ int AddTwoIntegersAlgorithm<BITS>::add(int a, int b) {
 
     a = utils::bitArrayToInt(aBitArray);    // in case a originally had more than BITS bits
     b = utils::bitArrayToInt(bBitArray);
+    int c = 0;
+    for (int i = 0; i < BITS; ++i) {
+        c += data[i][LOG_BITS] * (int) pow(2, i);
+    }
+
+    return a ^ b ^ c;
+}
+
+template<int BITS>
+int AddTwoIntegersAlgorithm<BITS>::add(std::array<int, BITS> aBitArray, std::array<int, BITS> bBitArray) {
+    // Reset data from previous computation
+    for (auto &arr: data) {
+        arr.fill(0);
+    }
+
+    data[0][0] = 0;
+    for (std::size_t i = 1; i < BITS; ++i) {
+        if (aBitArray[i - 1] == 1 && bBitArray[i - 1] == 1) {
+            data[i][0] = 1;
+        } else if (aBitArray[i - 1] != bBitArray[i - 1]) {
+            data[i][0] = STAR;
+        }
+    }
+
+    for (int k = 1; k < LOG_BITS + 1; ++k) {
+        std::vector<std::future<void>> threads;
+        threads.reserve(BITS);
+        for (int i = 0; i < BITS; ++i) {
+            threads.push_back(std::async(std::launch::async, [i, k, this]() {
+                recurrence(i, k);
+            }));
+        }
+
+        for (auto &future: threads) {
+            future.wait();
+        }
+    }
+
+    int a = utils::bitArrayToInt(aBitArray);    // in case a originally had more than BITS bits
+    int b = utils::bitArrayToInt(bBitArray);
     int c = 0;
     for (int i = 0; i < BITS; ++i) {
         c += data[i][LOG_BITS] * (int) pow(2, i);
