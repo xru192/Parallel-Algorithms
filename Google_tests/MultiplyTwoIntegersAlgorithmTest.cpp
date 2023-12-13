@@ -1,9 +1,9 @@
 #include "gtest/gtest.h"
-#include "MultiplyTwoIntegersAlgorithm.h"
+#include "MultiplyTwoIntegersAlgorithmTest.h"
 
 template<int BITS>
 void testAllInputs() {
-    MultiplyTwoIntegersAlgorithm<BITS> multTwoAlg{};
+    MultiplyTwoIntegersAlgorithmTest<BITS> multTwoAlg{};
     for (int a = 0; a < pow(2, BITS); a++) {
         for (int b = 0; b < pow(2, BITS); ++b) {
             int result = multTwoAlg.multiply(a, b);
@@ -26,7 +26,7 @@ TEST(MultiplyTwoIntegersAlgorithmTestSuite, Multiply5Bits) {
 
 template<int BITS>
 void testRandomInputs(int trials) {
-    MultiplyTwoIntegersAlgorithm<BITS> addTwoAlg{};
+    MultiplyTwoIntegersAlgorithmTest<BITS> addTwoAlg{};
     for (int i = 0; i < trials; ++i) {
         int a = rand() % (int) pow(2, BITS);
         int b = rand() % (int) pow(2, BITS);

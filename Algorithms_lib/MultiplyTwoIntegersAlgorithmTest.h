@@ -2,8 +2,8 @@
 // Created by Ryan Xu on 12/10/23.
 //
 
-#ifndef PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHM_H
-#define PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHM_H
+#ifndef PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHMTEST_H
+#define PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHMTEST_H
 
 #include <vector>
 #include <future>
@@ -11,7 +11,7 @@
 #include "AddThreeIntegersAlgorithm.h"
 
 template<int BITS>
-class MultiplyTwoIntegersAlgorithm {
+class MultiplyTwoIntegersAlgorithmTest {
     using bitarray = std::array<int, BITS>;
 public:
     int multiply(int a, int b);
@@ -24,7 +24,7 @@ private:
 };
 
 template<int BITS>
-int MultiplyTwoIntegersAlgorithm<BITS>::multiply(int a, int b) {
+int MultiplyTwoIntegersAlgorithmTest<BITS>::multiply(int a, int b) {
     std::array<int, BITS> aBitArray = utils::intToBitArray<BITS>(a);
     std::array<int, BITS> bBitArray = utils::intToBitArray<BITS>(b);
 
@@ -60,7 +60,7 @@ int MultiplyTwoIntegersAlgorithm<BITS>::multiply(int a, int b) {
 }
 
 template<int BITS>
-void MultiplyTwoIntegersAlgorithm<BITS>::reduceNumsToAdd() {
+void MultiplyTwoIntegersAlgorithmTest<BITS>::reduceNumsToAdd() {
     // make sure # of nums to add is divisible by 3
     while (numsToAdd.size() % 3 != 0) {
         bitarray zeros{};
@@ -77,7 +77,7 @@ void MultiplyTwoIntegersAlgorithm<BITS>::reduceNumsToAdd() {
         }));
     }
 
-    std::vector<bitarray> newNumsToAdd {};
+    std::vector<bitarray> newNumsToAdd{};
 
     for (auto &future: futures) {
         auto result = future.get();
@@ -87,4 +87,4 @@ void MultiplyTwoIntegersAlgorithm<BITS>::reduceNumsToAdd() {
 }
 
 
-#endif //PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHM_H
+#endif //PARALLELALGORITHMS_MULTIPLYTWOINTEGERSALGORITHMTEST_H
